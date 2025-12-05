@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="icon" href="/magic-tiger/tiger.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>魔术</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            gap: 30px;
+        }
+        
+		// 按钮
+		.btn-container {
+		            display: flex;
+		            flex-wrap: wrap;
+		            gap: 1rem;
+		            justify-content: center;
+		            margin-top: 2rem;
+					position: static;
+		        }
+		.btn-ripple {
+		    display: inline-flex;
+		    align-items: center;
+		    justify-content: center;
+		    border: none;
+		    border-radius: 10px;
+		    font-weight: 600;
+		    font-size: 1rem;
+		    padding: 0.75rem 1.5rem;
+		    cursor: pointer;
+		    transition: all 0.3s ease;
+		    position: relative;
+		    overflow: hidden;
+		    outline: none;
+		    text-decoration: none;
+		    letter-spacing: 0.3px;
+		    user-select: none;
+		    gap: 0.5rem;
+		    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+		    
+		    /* 按钮颜色 */
+		    background: linear-gradient(135deg, #4f6df5 0%, #3a56e4 100%);
+		    color: white;
+		}
+		
+		/* 悬停效果 */
+		.btn-ripple:hover {
+		    background: linear-gradient(135deg, #3a56e4 0%, #2a46d4 100%);
+		    transform: translateY(-2px);
+		    box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+		}
+		
+		/* 点击效果 */
+		.btn-ripple:active {
+		    transform: translateY(0);
+		}
+		
+		/* 焦点效果 */
+		.btn-ripple:focus {
+		    box-shadow: 0 0 0 3px rgba(79, 109, 245, 0.3);
+		}
+		
+		/* 涟漪效果样式 */
+		.ripple-effect {
+		    position: absolute;
+		    border-radius: 50%;
+		    background: rgba(255, 255, 255, 0.7);
+		    transform: scale(0);
+		    animation: ripple-animation 0.6s linear;
+		    pointer-events: none;
+		}
+		
+		/* 涟漪动画 */
+		@keyframes ripple-animation {
+		    to {
+		        transform: scale(4);
+		        opacity: 0;
+		    }
+		}
+		
+		/* 轮廓涟漪按钮 */
+		.btn-ripple.outline {
+		    background: transparent;
+		    border: 2px solid #4f6df5;
+		    color: #4f6df5;
+			 
+		}
+		
+		.btn-ripple.outline:hover {
+		    background: #4f6df5;
+		    color: white;
+		}
+		
+		
+		
+		
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            max-width: 1200px;
+            position: static;
+        }
+        
+        .card-wrapper {
+            perspective: 1000px;
+            position: absolute;
+            width: 280px;
+            height: 400px;
+            user-select: none;
+        }
+        
+        .card {
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 
+                0 10px 20px rgba(0, 0, 0, 0.15),
+                0 6px 6px rgba(0, 0, 0, 0.1),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transform-style: preserve-3d;
+        }
+		
+		.cards-containerB {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			gap: 30px;
+			max-width: 140px;
+			position: static;
+		}
+		
+		.card-wrapperB {
+		    perspective: 1000px;
+		    position: absolute;
+		    width: 140px;
+		    height: 200px;
+		    user-select: none;
+		}
+		
+		.cardB {
+		    width: 100%;
+		    height: 100%;
+		    background-color: white;
+		    border-radius: 8px;
+		    box-shadow: 
+		        0 10px 20px rgba(0, 0, 0, 0.15),
+		        0 6px 6px rgba(0, 0, 0, 0.1),
+		        inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+		    position: relative;
+		    transition: transform 0.3s ease, box-shadow 0.3s ease;
+		    transform-style: preserve-3d;
+		}
+
+		/* 角标容器 - 左上角 */
+		.corner-top-leftB {
+		    position: absolute;
+		    top: 20px;
+		    left: 20px;
+		    text-align: center;
+		    font-size: 14px;
+		    font-weight: bold;
+		    line-height: 1;
+		}
+		
+		/* 角标容器 - 右下角 */
+		.corner-bottom-rightB {
+		    position: absolute;
+		    bottom: 20px;
+		    right: 20px;
+		    text-align: center;
+		    font-size: 14px;
+		    font-weight: bold;
+		    line-height: 1;
+		}
+		
+		/* 符号样式 */
+		.symbolB {
+		    font-size: 11px;
+		    display: block;
+		    margin-top: 2px;
+		}
+		
+		/* 中央大符号 */
+		.center-symbolB {
+		    position: absolute;
+		    top: 50%;
+		    left: 50%;
+		    transform: translate(-50%, -50%);
+		    font-size: 70px;
+		}
+		
+		/* 扑克牌背面图案（装饰用） */
+		.card-back-patternB {
+		    position: absolute;
+		    top: 50%;
+		    left: 50%;
+		    transform: translate(-50%, -50%);
+		    opacity: 0.03;
+		    font-size: 150px;
+		    z-index: 1;
+		}
+		
+		/* 装饰性圆点 */
+		.decorative-dotsB {
+		    position: absolute;
+		    top: 50%;
+		    left: 50%;
+		    transform: translate(-50%, -50%);
+		    width: 90px;
+		    height: 90px;
+		    border-radius: 50%;
+		    z-index: 0;
+		}
+		
+		/* 黑桃A样式 */
+		.card-spadeB .corner-top-leftB,
+		.card-spadeB .corner-bottom-rightB,
+		.card-spadeB .center-symbolB,
+		.card-spadeB .card-back-patternB {
+		    color: black;
+		}
+		
+		.card-spadeB .decorative-dotsB {
+		    background: radial-gradient(circle, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0) 70%);
+		}
+		
+		/* 红桃A样式 */
+		.card-heartB .corner-top-leftB,
+		.card-heartB .corner-bottom-rightB,
+		.card-heartB .center-symbolB,
+		.card-heartB .card-back-patternB {
+		    color: #d63031;
+		}
+		
+		.card-heartB .decorative-dots {
+		    background: radial-gradient(circle, rgba(214, 48, 49, 0.03) 0%, rgba(0,0,0,0) 70%);
+		}
+		
+		/* 梅花A样式 */
+		.card-clubB .corner-top-leftB,
+		.card-clubB .corner-bottom-rightB,
+		.card-clubB .center-symbolB,
+		.card-clubB .card-back-patternB {
+		    color: black;
+		}
+		
+		.card-clubB .decorative-dotsB {
+		    background: radial-gradient(circle, rgba(0, 0, 0, 0.03) 0%, rgba(0,0,0,0) 70%);
+		}
+		
+		/* 方块A样式 */
+		.card-diamondB .corner-top-leftB,
+		.card-diamondB .corner-bottom-rightB,
+		.card-diamondB .center-symbolB,
+		.card-diamondB .card-back-patternB {
+		    color: #d63031;
+		}
+		
+		.card-diamondB .decorative-dotsB {
+		    background: radial-gradient(circle, rgba(214, 48, 49, 0.03) 0%, rgba(0,0,0,0) 70%);
+		}
+		
+
+		
+		/* 扑克牌边角装饰 */
+		.cardB::before {
+		    content: "";
+		    position: absolute;
+		    top: 6px;
+		    left: 6px;
+		    right: 6px;
+		    bottom: 6px;
+		    border: 1px solid rgba(0, 0, 0, 0.05);
+		    border-radius: 4px;
+		    pointer-events: none;
+		}
+        
+		.cardB.hovered {
+		    transform: translateY(-3px);
+		    box-shadow: 
+		        0 15px 30px rgba(0, 0, 0, 0.25),
+		        0 10px 10px rgba(0, 0, 0, 0.15),
+		        inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+		}
+		
+        /* 悬停效果 - 通过JS控制的类 */
+        .card.hovered {
+            transform: translateY(-10px);
+            box-shadow: 
+                0 15px 30px rgba(0, 0, 0, 0.25),
+                0 10px 10px rgba(0, 0, 0, 0.15),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+        }
+        
+        /* 扑克牌边角装饰 */
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            bottom: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            pointer-events: none;
+        }
+        
+        /* 角标容器 - 左上角 */
+        .corner-top-left {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            line-height: 1;
+        }
+        
+        /* 角标容器 - 右下角 */
+        .corner-bottom-right {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            line-height: 1;
+        }
+        
+        /* 符号样式 */
+        .symbol {
+            font-size: 22px;
+            display: block;
+            margin-top: 4px;
+        }
+        
+        /* 中央大符号 */
+        .center-symbol {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 140px;
+        }
+        
+        /* 扑克牌背面图案（装饰用） */
+        .card-back-pattern {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.03;
+            font-size: 300px;
+            z-index: 1;
+        }
+        
+        /* 装饰性圆点 */
+        .decorative-dots {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            z-index: 0;
+        }
+        
+        /* 黑桃A样式 */
+        .card-spade .corner-top-left,
+        .card-spade .corner-bottom-right,
+        .card-spade .center-symbol,
+        .card-spade .card-back-pattern {
+            color: black;
+        }
+        
+        .card-spade .decorative-dots {
+            background: radial-gradient(circle, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0) 70%);
+        }
+        
+        /* 红桃A样式 */
+        .card-heart .corner-top-left,
+        .card-heart .corner-bottom-right,
+        .card-heart .center-symbol,
+        .card-heart .card-back-pattern {
+            color: #d63031;
+        }
+        
+        .card-heart .decorative-dots {
+            background: radial-gradient(circle, rgba(214, 48, 49, 0.03) 0%, rgba(0,0,0,0) 70%);
+        }
+        
+        /* 梅花A样式 */
+        .card-club .corner-top-left,
+        .card-club .corner-bottom-right,
+        .card-club .center-symbol,
+        .card-club .card-back-pattern {
+            color: black;
+        }
+        
+        .card-club .decorative-dots {
+            background: radial-gradient(circle, rgba(0, 0, 0, 0.03) 0%, rgba(0,0,0,0) 70%);
+        }
+        
+        /* 方块A样式 */
+        .card-diamond .corner-top-left,
+        .card-diamond .corner-bottom-right,
+        .card-diamond .center-symbol,
+        .card-diamond .card-back-pattern {
+            color: #d63031;
+        }
+        
+        .card-diamond .decorative-dots {
+            background: radial-gradient(circle, rgba(214, 48, 49, 0.03) 0%, rgba(0,0,0,0) 70%);
+        }
+
+
+		#toggle-btn {
+			top:20px;
+			left: 10px;
+			position: absolute;
+		}
+		
+		#tips-btn {
+			top:20px;
+			left: 150px;
+			position: absolute;
+			display:flex;
+		}
+		
+		#tips {
+			display: none ;
+			position: absolute;
+			z-index: -1;
+			font-size: 24px;
+			user-select: none;
+		}
+		
+		#tiger{
+			position: absolute;
+			user-select: none;
+			z-index: -2;
+			opacity: 1;
+			user-select: none;
+		}
+
+		#tiger-btn{
+			display: none;
+			position: absolute;
+			width: 68px;
+			height: auto;
+			top: 5px;
+			left: 149px;
+			user-select: none;
+		}
+		
+		#tiger-text{
+			display: none ;
+			position: absolute;
+			z-index: -1;
+			font-size: 300px;
+			user-select: none;
+		}
+
+        /* 响应式调整 */
+        @media (max-width: 600px) {
+            .card-wrapper {
+                width: 240px;
+                height: 340px;
+            }
+            
+            .center-symbol {
+                font-size: 110px;
+            }
+            
+            .corner-top-left, .corner-bottom-right {
+                font-size: 24px;
+            }
+            
+            .symbol {
+                font-size: 19px;
+            }
+			
+			.card-wrapperB {
+			    width: 120px;
+			    height: 170px;
+			}
+			
+			.center-symbolB {
+			    font-size: 55px;
+			}
+			
+			.corner-top-leftB, .corner-bottom-rightB {
+			    font-size: 12px;
+			}
+			
+			.symbolB {
+			    font-size: 9.5px;
+			}
+			
+        }
+    </style>
+</head>
+<body>
+    <!-- 单个卡牌容器 -->
+    <div class="cards-container" id="cards-container">
+        <!-- 卡牌将在这里动态创建 -->
+    </div>
+	<div class="cards-containerB" id="cards-containerB">
+	    <!-- 卡牌将在这里动态创建 -->
+	</div>
+	<div class="btn-container">
+		<button class="btn-ripple outline" id="toggle-btn">显示/隐藏</button>
+		<button class="btn-ripple outline" id="tips-btn">说明</button>
+		<img src = "/magic-tiger/tiger.ico" id = "tiger-btn">
+	</div>
+	
+	<img src="/magic-tiger/tiger.ico" id="tiger">
+	
+	<div id="tiger-text">
+		<p style="margin-top: 2rem; color: #312f2f;">就你也配看？</p>
+		<!-- <p style="margin-top: 2rem; color: #312f2f;">你点我撒</p> -->
+	</div>
+	
+	<div id="tips" >
+		<p style="margin-top: 2rem; color: #312f2f;">1.打开至少两个此网页，并分离为两个窗口化（不是最大化和最小化）的窗口，不要重叠，然后拖动扑克牌，你就会发现扑克牌可以在两窗口间自由穿梭</p>
+		<p style="margin-top: 2rem; color: #312f2f;">2.窗口的最小宽度就是不要让浏览器发生缩放（大概为4张小扑克牌的宽度），否则会导致错位</p>
+		<p style="margin-top: 2rem; color: #312f2f;">3.点击4张小扑克牌可以快速创建对应扑克牌的新窗口，这样就可以变魔术了</p>
+	</div>
+	
+    <script>
+	// 卡牌数据配置
+	const cardConfigs = {
+	    1: {
+	        type: 'spade',
+	        symbol: '♠',
+	        name: '黑桃A',
+	        color: 'black',
+	        className: 'card-spade'
+	    },
+	    2: {
+	        type: 'heart', 
+	        symbol: '♥',
+	        name: '红桃A',
+	        color: '#d63031',
+	        className: 'card-heart'
+	    },
+	    3: {
+	        type: 'diamond',
+	        symbol: '♦', 
+	        name: '方块A',
+	        color: '#d63031',
+	        className: 'card-diamond'
+	    },
+	    4: {
+	        type: 'club',
+	        symbol: '♣',
+	        name: '梅花A',
+	        color: 'black',
+	        className: 'card-club'
+	    }
+	};
+	
+	const cardConfigsB = {
+	    1: {
+	        type: 'spade',
+	        symbol: '♠',
+	        name: '黑桃A',
+	        color: 'black',
+	        className: 'card-spadeB'
+	    },
+	    2: {
+	        type: 'heart', 
+	        symbol: '♥',
+	        name: '红桃A',
+	        color: '#d63031',
+	        className: 'card-heartB'
+	    },
+	    3: {
+	        type: 'diamond',
+	        symbol: '♦', 
+	        name: '方块A',
+	        color: '#d63031',
+	        className: 'card-diamondB'
+	    },
+	    4: {
+	        type: 'club',
+	        symbol: '♣',
+	        name: '梅花A',
+	        color: 'black',
+	        className: 'card-clubB'
+	    }
+	};
+	
+	// 获取URL参数
+	function getUrlParam(name) {
+	    const urlParams = new URLSearchParams(window.location.search);
+	    return urlParams.get(name);
+	}
+	
+	// 创建卡牌元素
+	function createCard(cardConfig,top="35%") {
+	    const cardWrapper = document.createElement('div');
+	    cardWrapper.className = `card-wrapper ${cardConfig.className}`;
+	    cardWrapper.setAttribute('data-card-type', cardConfig.type);
+	    cardWrapper.style.top =top;
+	    
+	    const cardHTML = `
+	        <div class="card">
+	            <!-- 装饰性圆点背景 -->
+	            <div class="decorative-dots"></div>
+	            
+	            <!-- 扑克牌背面图案（仅作装饰） -->
+	            <div class="card-back-pattern">${cardConfig.symbol}</div>
+	            
+	            <!-- 左上角标 -->
+	            <div class="corner-top-left">
+	                A
+	                <span class="symbol">${cardConfig.symbol}</span>
+	            </div>
+	            
+	            <!-- 右下角标 -->
+	            <div class="corner-bottom-right">
+	                A
+	                <span class="symbol">${cardConfig.symbol}</span>
+	            </div>
+	            
+	            <!-- 中央大符号 -->
+	            <div class="center-symbol">${cardConfig.symbol}</div>
+	        </div>
+	    `;
+	    
+	    cardWrapper.innerHTML = cardHTML;
+	    return cardWrapper;
+	}
+	
+	function createCardB(cardConfig, left="50vw",top="50vh",type="B1") {
+	    const cardWrapper = document.createElement('div');
+	    cardWrapper.className = `card-wrapperB ${cardConfig.className}`;
+	    cardWrapper.setAttribute('data-card-type', cardConfig.type);
+	    cardWrapper.style.left = left;
+	    cardWrapper.style.top =top;
+	    
+	    const cardHTML = `
+		
+	        <div class="cardB" id="${type}">
+	            <!-- 装饰性圆点背景 -->
+	            <div class="decorative-dotsB"></div>
+	            
+	            <!-- 扑克牌背面图案（仅作装饰） -->
+	            <div class="card-back-patternB">${cardConfig.symbol}</div>
+	            
+	            <!-- 左上角标 -->
+	            <div class="corner-top-leftB">
+	                A
+	                <span class="symbolB">${cardConfig.symbol}</span>
+	            </div>
+	            
+	            <!-- 右下角标 -->
+	            <div class="corner-bottom-rightB">
+	                A
+	                <span class="symbolB">${cardConfig.symbol}</span>
+	            </div>
+	            
+	            <!-- 中央大符号 -->
+	            <div class="center-symbolB">${cardConfig.symbol}</div>
+			</div>
+		
+	    `;
+	    
+	    cardWrapper.innerHTML = cardHTML;
+	    return cardWrapper;
+	}
+	
+	
+	
+	// 坐标转换函数
+	function barHeight(){
+	    return window.outerHeight - window.innerHeight;
+	}
+	
+	function clientToScreen(clientX, clientY){
+	    const screenX = clientX + window.screenX;
+	    const screenY = clientY + window.screenY + barHeight();
+	    return [screenX, screenY];
+	}
+	
+	function screenToClient(screenX, screenY){
+	    const clientX = screenX - window.screenX;
+	    const clientY = screenY - window.screenY - barHeight();
+	    return [clientX, clientY];
+	}
+	
+	// 广播通道 - 用于窗口间通信
+	let cardChannel;
+	
+	// 打开新窗口的通用函数
+	function openNewWindow(url) {
+		if (!url) return;
+		
+		
+		// 在新窗口打开链接
+		// 使用noopener和noreferrer增强安全性
+		const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
+
+		
+	}
+
+	// 初始化应用
+	function init() {
+	    const container = document.getElementById('cards-container');
+		const containerB = document.getElementById('cards-containerB');
+
+	    
+	    // 获取URL参数，默认为1（黑桃）
+	    const type = getUrlParam('type') || '1';
+	    const cardConfig = cardConfigs[type];
+	    
+	    if (!cardConfig) {
+	        console.error('无效的卡牌类型:', type);
+	        container.innerHTML = '<p style="color: red; font-size: 20px;">无效的卡牌类型</p>';
+	        return;
+	    }
+	    
+	    // 创建卡牌
+	    const card = createCard(cardConfig);
+	    container.appendChild(card);
+	    
+		// 按钮
+		const cardConfig1 = cardConfigsB[1];
+		const cardB1 = createCardB(cardConfig1,"10px","80px","B1");
+		containerB.appendChild(cardB1);
+		
+		const cardConfig2 = cardConfigsB[2];
+		const cardB2 = createCardB(cardConfig2,"160px","80px","B2");
+		containerB.appendChild(cardB2);
+		
+		const cardConfig3 = cardConfigsB[3];
+		const cardB3 = createCardB(cardConfig3,"310px","80px","B3");
+		containerB.appendChild(cardB3);
+		
+		const cardConfig4 = cardConfigsB[4];
+		const cardB4 = createCardB(cardConfig4,"460px","80px","B4");
+		containerB.appendChild(cardB4);
+		
+		
+		const B1 = document.getElementById('B1');
+		const B2 = document.getElementById('B2');
+		const B3 = document.getElementById('B3');
+		const B4 = document.getElementById('B4');
+		
+		
+		B1.addEventListener('click', function() {
+			openNewWindow(defaultUrls.btn1);
+		});
+		
+		// 为第二个按钮设置点击事件
+		B2.addEventListener('click', function() {
+			openNewWindow(defaultUrls.btn2);
+		});
+		
+		// 为第三个按钮设置点击事件
+		B3.addEventListener('click', function() {
+			openNewWindow(defaultUrls.btn3);
+		});
+		
+		B4.addEventListener('click', function() {
+			openNewWindow(defaultUrls.btn4);
+		});
+		
+		const url = new URL(location.href);
+		const newurl= jumpedurl(url);
+		
+		const defaultUrls = {
+			btn1: newurl+"?type=1",
+			btn2: newurl+"?type=2",
+			btn3: newurl+"?type=3",
+			btn4: newurl+"?type=4",
+		};
+		
+		
+		// 涟漪效果
+		document.querySelectorAll('.btn-ripple').forEach(button => {
+			button.addEventListener('click', function(e) {
+				// 创建涟漪元素
+				const ripple = document.createElement('span');
+				const rect = this.getBoundingClientRect();
+				
+				// 计算涟漪大小（取按钮宽高中较大的值）
+				const size = Math.max(rect.width, rect.height);
+				
+				// 计算涟漪位置（鼠标点击位置）
+				const x = e.clientX - rect.left - size / 2;
+				const y = e.clientY - rect.top - size / 2;
+				
+				// 设置涟漪样式
+				ripple.style.cssText = `
+					position: absolute;
+					border-radius: 50%;
+					background: rgba(255, 255, 255, 0.7);
+					transform: scale(0);
+					animation: ripple-animation 0.6s linear;
+					width: ${size}px;
+					height: ${size}px;
+					top: ${y}px;
+					left: ${x}px;
+					pointer-events: none;
+				`;
+				
+				// 将涟漪添加到按钮中
+				this.appendChild(ripple);
+				
+				// 动画结束后移除涟漪元素
+				setTimeout(() => {
+					ripple.remove();
+				}, 600);
+			});
+		});
+		
+		
+		
+	    // 初始化广播通道
+	    cardChannel = new BroadcastChannel('card');
+	    
+		
+		// 切换按钮
+		const toggleBtn = document.getElementById('toggle-btn');
+		const tips_btn = document.getElementById('tips-btn');
+
+		
+		toggleBtn.addEventListener('click', () => {
+			// 获取当前状态
+			const isCurrentlyShowing = window.getComputedStyle(containerB).display !== 'none';
+			
+			if (isCurrentlyShowing) {
+				// 当前是显示状态，切换到隐藏
+				containerB.style.display = 'none';
+				tips_btn.style.display = 'none';
+			} else {
+				// 当前是隐藏状态，切换到显示
+				containerB.style.display = 'flex';
+				tips_btn.style.display = 'flex';
+			}
+			if(tips_btn.style.display === 'none'){
+				tigerbtn.style.display = "none"
+			}
+			
+			// 广播状态给其他窗口
+			const newState = !isCurrentlyShowing;
+			cardChannel.postMessage({
+				type: 'toggle',
+				data: newState
+			});
+		});
+		
+		// 说明按钮
+		const tips = document.getElementById('tips');
+		const tiger = document.getElementById('tiger');
+		const tigerbtn = document.getElementById("tiger-btn");
+		const tigertext = document.getElementById("tiger-text");
+		tips_btn.addEventListener('mouseenter', () => {
+			tigerbtn.style.display = "flex";
+			tips_btn.style.display = 'none';
+		});
+		tigerbtn.addEventListener('mouseenter', () => {
+			tigertext.style.display = 'block';
+			tiger.style.opacity = '0.3';
+		});
+		tigerbtn.addEventListener('mouseleave', () => {
+			tigertext.style.display = 'none';
+			tiger.style.opacity = '1';
+			tips_btn.style.display = 'flex';
+			tigerbtn.style.display = "none";
+			tips.style.display = 'none';
+		});
+		tigerbtn.addEventListener('click', () => {
+			tigertext.style.display = 'none';
+			tips.style.display = 'block';
+			
+		});
+		
+		
+		
+		// 设置拖拽功能和悬停效果
+		setupDragAndDrop(card);
+		setupHoverEffect(card);
+		setupHoverEffectB(cardB1);
+		setupHoverEffectB(cardB2);
+		setupHoverEffectB(cardB3);
+		setupHoverEffectB(cardB4);
+		
+		// 监听来自其他窗口的消息，传递必要的参数
+		setupChannelListeners(card, containerB, tips_btn);
+		
+		
+		
+	    // 更新页面标题
+	    document.title = `魔术`;
+	}
+	
+	// 设置拖拽功能
+	function setupDragAndDrop(card) {
+	    card.onmousedown = (e) => {
+	        console.log('鼠标按下', e);
+	        let x = e.pageX - card.offsetLeft;
+	        let y = e.pageY - card.offsetTop;
+	        
+	        window.onmousemove = (e) => {
+	            const cx = e.pageX - x;
+	            const cy = e.pageY - y;
+	            card.style.left = cx + 'px';
+	            card.style.top = cy + 'px';
+	            const screenPoints = clientToScreen(cx, cy);
+	            
+	            // 广播位置信息
+	            cardChannel.postMessage({
+	                type: 'position',
+	                data: screenPoints
+	            });
+	        };
+	        
+	        window.onmouseup = () => {
+	            window.onmousemove = null;
+	            window.onmouseup = null;
+	        };
+	    };
+	}
+	
+	// 设置悬停效果
+	function setupHoverEffectB(card) {
+		const cardElementB = card.querySelector('.cardB');
+		card.addEventListener('mouseenter', () => {
+		    cardElementB.classList.add('hovered');});
+		card.addEventListener('mouseleave', () => {
+		    cardElementB.classList.remove('hovered');
+		});
+			}
+	
+	function setupHoverEffect(card) {
+	    const cardElement = card.querySelector('.card');
+		
+	    
+	    // 鼠标进入时添加悬停效果并广播
+	    card.addEventListener('mouseenter', () => {
+	        cardElement.classList.add('hovered');
+	        
+	        // 广播悬停开始
+	        cardChannel.postMessage({
+	            type: 'hover',
+	            data: true
+	        });
+	    });
+	    
+	    // 鼠标离开时移除悬停效果并广播
+	    card.addEventListener('mouseleave', () => {
+	        cardElement.classList.remove('hovered');
+	        
+	        // 广播悬停结束
+	        cardChannel.postMessage({
+	            type: 'hover',
+	            data: false
+	        });
+	    });
+	}
+	
+	// 设置通道监听
+	function setupChannelListeners(card, containerB, tips_btn) {
+		const cardElement = card.querySelector('.card');
+		
+		cardChannel.onmessage = (e) => {
+			const message = e.data;
+			
+			switch (message.type) {
+				case 'position':
+					// 处理位置更新
+					const [cx, cy] = screenToClient(...message.data);
+					card.style.left = cx + 'px';
+					card.style.top = cy + 'px';
+					break;
+					
+				case 'hover':
+					// 处理悬停状态更新
+					if (message.data) {
+						cardElement.classList.add('hovered');
+					} else {
+						cardElement.classList.remove('hovered');
+					}
+					break;
+					
+				case 'toggle':
+					// 处理切换按钮状态更新
+					if (message.data) {
+						// 显示状态
+						containerB.style.display = 'flex';
+						tips_btn.style.display = 'flex';
+					} else {
+						// 隐藏状态
+						containerB.style.display = 'none';
+						tips_btn.style.display = 'none';
+					}
+					break;
+					
+			}
+		};
+	}
+	// 跳转url
+	function jumpedurl(url) {
+		const type = url.searchParams.get('type') || '0';
+		if (type==='0') {
+			return url;
+		}
+		else {
+			const urlStr = url.toString();
+			const baseUrl = urlStr.split('?')[0];
+			const searchParams = new URLSearchParams(url);
+			searchParams.delete('type');
+			
+			const paramsString = searchParams.toString();
+			const newUrl = paramsString ? `${baseUrl}?${paramsString}` : baseUrl;
+			
+			return new URL(newUrl);
+		};
+	}
+	
+
+
+	
+	// 页面加载完成后初始化
+	document.addEventListener('DOMContentLoaded', init);
+		
+	</script>
+</body>
+</html>
